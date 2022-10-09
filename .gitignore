@@ -1,0 +1,12 @@
+# Folders
+__pycache__/
+.idea/
+venv/
+
+# Files
+/config.py
+/para_received.json
+/parameters.txt
+/params_used.txt
+/tp2.py
+
