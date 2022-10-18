@@ -11,7 +11,7 @@ app = Flask(__name__)
 # No need to make client object as no function in this file uses it
 
 # Create and configure logger
-logging.basicConfig(filename="log_file.log", level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s', filemode='w')
+logging.basicConfig(filename="log_file.log", level=logging.DEBUG, format='%(asctime)s %(message)s', filemode='w')
 
 # Creating an object
 logger = logging.getLogger()
@@ -25,7 +25,8 @@ logger = logging.getLogger()
 
 @app.route('/')
 def home():
-    return "AgloTrading Bot created by @dhyeysherasia. Logging to log_file.log""     
+    # return render_template("home.html", position=get_my_positions)  
+    return "Algorithmic Trading Bot created by @dhyeysherasia"   
 
 
 # Request received from tradingview
@@ -45,11 +46,13 @@ def webhook():
             "message": "Incorrect passphrase"
         }
 
-    order_response = {
-        "code": "failure",
-        "message": "Could not even initiate order"
-    }
+    # Intentionally commented cause it can create error and exception block can be executed
+    # order_response = {
+    #     "code": "failure",
+    #     "message": "Could not even initiate order"
+    # }
 
+    trade_opened = False
     try:
         my_positions = get_my_positions()
         print(f"Position: {my_positions}")
@@ -66,33 +69,43 @@ def webhook():
         # Open position if positionAmt == 0.
         if my_positions == 0 and market_position != 'flat':
             order_response = open_trade(side=side, symbol="BTCUSDT")  # Quantity is cal. inside the function
+            trade_opened = True
 
         # If positionAmt > 0, close position by making a 'SELL' order of same quantity.
         elif my_positions > 0 and market_position == 'flat' and side == 'SELL':
             quantity = abs(my_positions)
             order_response = close_trade(side='SELL', symbol="BTCUSDT", quantity=quantity)
-            
+            trade_opened = True
+
         # If positionAmt < 0, close position by making a 'BUY' order of same quantity.
         elif my_positions < 0 and market_position == 'flat' and side == 'BUY':
             quantity = abs(my_positions)
             order_response = close_trade(side='BUY', symbol="BTCUSDT", quantity=quantity)
-        
+            trade_opened = True
         
         # Get remaining usdt
         holdings = get_my_holdings(specific=True, symbol='USDT')
-        remaining_usdt = float(holdings[0]['withdrawAvailable'])  # Can use 'withdrawAvailable' as balacnce will be same after placing order
-        bot_response = send_telegram_message(f"Remaining Balance: {remaining_usdt}")
+        holdings = str(f"{float(holdings[0]['withdrawAvailable']):.3f}")  # Can use 'withdrawAvailable' as balacnce will be same after placing order
+        remaining_usdt = float(holdings)
+        bot_response = send_telegram_message(f"Remaining Balance: {remaining_usdt} USDT")
         return order_response
 
 
     except Exception as e:
-        print(f"Exception occured while evaluating position: {e}")
-        logger.error(f"Exception occured while evaluating position: {e}")
-        bot_response = send_telegram_message(f"Failed to initiate trade.\nTV position did not match your current position.\nYour Pos: {my_positions}\nTV Pos: {market_position}\nSide: {side}")
         bot_response = send_telegram_message(f"Error: {e}")
+        if not trade_opened:
+            print(f"Exception occurred while evaluating position: {e}")
+            logger.error(f"Exception occurred while evaluating position: {e}")
+            bot_response = send_telegram_message(f"Failed to initiate trade.\nTV position did not match your current position.\nYour Pos: {my_positions}\nTV Pos: {market_position}\nSide: {side}")
+
+            return {
+                'code': 'Failure',
+                'message': 'Error occurred while evaluating position and initiating trade'
+            }
+
         return {
-            'code': 'Failure',
-            'message': 'Error occured while evaluating position and initiating trade'
+            'code': 'Success',
+            'message': 'Trade executed successfully'
         }
         
 
