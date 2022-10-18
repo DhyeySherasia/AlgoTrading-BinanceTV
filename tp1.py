@@ -24,16 +24,65 @@ def holdings(update=Update, context=CallbackContext):
     available_usdt = float(holdings)
     update.message.reply_text(f"Your holdings: {available_usdt} USDT")
 
+def long(update=Update, context=CallbackContext):
+    my_positions = get_my_positions()
+    logger.info(f"Position: {my_positions}")
+
+    if my_positions == 0:
+        try:
+            order_response = open_trade(side='BUY', symbol="BTCUSDT")
+        except Exception as e:
+            update.message.reply_text(f"Error: {e}")
+
+    else:
+        update.message.reply_text(f"Trade already exists.\nYour current position: {my_positions}")
+
+def short(update=Update, context=CallbackContext):
+    my_positions = get_my_positions()
+    logger.info(f"Position: {my_positions}")
+
+    if my_positions == 0:
+        try:
+            order_response = open_trade(side='SELL', symbol="BTCUSDT")
+        except Exception as e:
+            update.message.reply_text(f"Error: {e}")
+
+    else:
+        update.message.reply_text(f"Trade already exists.\nYour current position: {my_positions}")
+
+def close(update=Update, context=CallbackContext):
+    my_positions = get_my_positions()
+    logger.info(f"Position: {my_positions}")
+
+    # Close long position
+    if my_positions > 0:
+        try:
+            quantity = abs(my_positions)
+            order_response = close_trade(side='SELL', symbol="BTCUSDT", quantity=quantity)
+        except Exception as e:
+            update.message.reply_text(f"Error: {e}")
+
+    # Close short position
+    elif my_positions < 0:
+        try:
+            quantity = abs(my_positions)
+            order_response = close_trade(side='BUY', symbol="BTCUSDT", quantity=quantity)
+        except Exception as e:
+            update.message.reply_text(f"Error: {e}")
+
+    else:
+        update.message.reply_text(f"No open trade found.\nYour current position: {my_positions}")
+
 
 def help(update=Update, context=CallbackContext):
     update.message.reply_text(
     """
-    /positions --> Get your current position
-    /holdings --> Get your current holdings
-    /long --> Open long position of predefined portfolio percentage
-    /short --> Open short position of predefined portfolio percentage
+    /positions --> Current position
+    /holdings --> Current holdings (USDT)
+    /long --> Open long trade
+    /short --> Open short trade
     /close --> Close any open trade
-    /help --> Show available commands
+    /help --> Show all commands
     *Note: Trades will be executed only if the position conditions meet
     (Pyramiding == 1)
     """
@@ -50,6 +99,9 @@ def unknown(update=Update, context=CallbackContext):
 
 dispatcher.add_handler(CommandHandler('positions', positions))
 dispatcher.add_handler(CommandHandler('holdings', holdings))
+dispatcher.add_handler(CommandHandler('long', long))
+dispatcher.add_handler(CommandHandler('short', short))
+dispatcher.add_handler(CommandHandler('close', close))
 dispatcher.add_handler(CommandHandler('help', help))
 
 # Filter out unknown commands and messages
