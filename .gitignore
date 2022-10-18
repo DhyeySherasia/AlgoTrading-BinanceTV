@@ -11,4 +11,5 @@ templates/
 /parameters.txt
 /params_used.txt
 /tp2.py
+/log_file.log
 
