@@ -5,7 +5,7 @@ from binance.enums import *
 import logging
 
 # Define binance client object
-client = Client(config.API_KEY, config.API_SECRET, testnet=True)
+client = Client(config.API_KEY, config.API_SECRET, testnet=False)
 
 # Create and configure logger
 logging.basicConfig(filename="log_file.log", level=logging.DEBUG, format='%(asctime)s %(message)s', filemode='w')
@@ -114,7 +114,8 @@ def open_trade(side, symbol, order_type=ORDER_TYPE_MARKET):
         # Get available usdt
         holdings = get_my_holdings(specific=True, symbol='USDT')
         available_usdt = float(holdings[0]['withdrawAvailable'])  # Can use 'withdrawAvailable' as balacnce will be same after placing order
-        to_trade_usdt = (80 / 100) * available_usdt  # 100% of available USDT
+        # 'Margin insufficient' error with 100%. Hence used 95%.
+        to_trade_usdt = (95 / 100) * available_usdt  # 95% of available USDT
         print(f"Holdings: {available_usdt} USDT")
         print(f"Tradable: {to_trade_usdt} USDT")
         logger.info(f"Holdings: {available_usdt} USDT")

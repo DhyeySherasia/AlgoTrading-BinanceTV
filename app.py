@@ -1,10 +1,16 @@
+from telegram.ext.updater import Updater
+from telegram.update import Update
+from telegram.ext.callbackcontext import CallbackContext
+from telegram.ext.commandhandler import CommandHandler
+from telegram.ext.messagehandler import MessageHandler
+from telegram.ext.filters import Filters
+from telegram_commands import *
 import json, config, requests
 from flask import Flask, request, jsonify, render_template
 from binance.client import Client
 from binance.enums import *
 from functions import *
 import logging
-
 
 app = Flask(__name__)
 
@@ -26,13 +32,12 @@ logger = logging.getLogger()
 @app.route('/')
 def home():
     # return render_template("home.html", position=get_my_positions)  
-    return "Algorithmic Trading Bot created by @dhyeysherasia"   
+    return "Algorithmic Trading Bot created by @dhyeysherasia"
 
 
 # Request received from tradingview
 @app.route('/webhook', methods=['POST'])
 def webhook():
-
     # Convert to python dictionary
     data = request.data
     data = json.loads(data)
@@ -82,10 +87,11 @@ def webhook():
             quantity = abs(my_positions)
             order_response = close_trade(side='BUY', symbol="BTCUSDT", quantity=quantity)
             trade_opened = True
-        
+
         # Get remaining usdt
         holdings = get_my_holdings(specific=True, symbol='USDT')
-        holdings = str(f"{float(holdings[0]['withdrawAvailable']):.3f}")  # Can use 'withdrawAvailable' as balacnce will be same after placing order
+        holdings = str(
+            f"{float(holdings[0]['withdrawAvailable']):.3f}")  # Can use 'withdrawAvailable' as balacnce will be same after placing order
         remaining_usdt = float(holdings)
         bot_response = send_telegram_message(f"Remaining Balance: {remaining_usdt} USDT")
         return order_response
@@ -96,7 +102,8 @@ def webhook():
         if not trade_opened:
             print(f"Exception occurred while evaluating position: {e}")
             logger.error(f"Exception occurred while evaluating position: {e}")
-            bot_response = send_telegram_message(f"Failed to initiate trade.\nTV position did not match your current position.\nYour Pos: {my_positions}\nTV Pos: {market_position}\nSide: {side}")
+            bot_response = send_telegram_message(
+                f"Failed to initiate trade.\nTV position did not match your current position.\nYour Pos: {my_positions}\nTV Pos: {market_position}\nSide: {side}")
 
             return {
                 'code': 'Failure',
@@ -107,10 +114,12 @@ def webhook():
             'code': 'Success',
             'message': 'Trade executed successfully'
         }
-        
 
 
 if __name__ == "__main__":
     app.run(debug=True)
 
-    
+    # Initialize telegram commands
+    # print("Initializing telegram commands")
+    # updater.start_polling()
+    # updater.idle()

@@ -1,0 +1,105 @@
+2022-10-25 18:52:39,966 Setting singleton dispatcher as <telegram.ext.dispatcher.Dispatcher object at 0x0000022F96C2D380>
+2022-10-25 18:52:40,051  * Debugger is active!
+2022-10-25 18:52:40,083  * Debugger PIN: 116-729-557
+2022-10-25 18:52:40,303  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2022-10-25 18:52:40,832 Getting your positions
+2022-10-25 18:52:40,856 Starting new HTTPS connection (1): fapi.binance.com:443
+2022-10-25 18:52:41,320 https://fapi.binance.com:443 "GET /fapi/v1/account?timestamp=1666704160832&signature=557ad3c24cf6a2d5c720da8dcca1885359189d2295461555c16154999b762a2e HTTP/1.1" 200 None
+2022-10-25 18:52:41,336 Position: 0.0
+2022-10-25 18:52:41,336 Getting your holdings
+2022-10-25 18:52:41,568 https://fapi.binance.com:443 "GET /fapi/v1/balance?timestamp=1666704161336&signature=cce7ac7cb19e9e2dada34cf7420261e0821b18586ee41684531ce2a3264e1997 HTTP/1.1" 200 None
+2022-10-25 18:52:41,576 Holdings: 110.3450709 USDT
+2022-10-25 18:52:41,576 Tradable: 104.827817355 USDT
+2022-10-25 18:52:41,584 Getting price for BTCUSDT
+2022-10-25 18:52:41,832 https://fapi.binance.com:443 "GET /fapi/v1/ticker/price HTTP/1.1" 200 None
+2022-10-25 18:52:41,832 BTCUSDT Price: 19380.2
+2022-10-25 18:52:41,832 Quantity: 0.005
+2022-10-25 18:52:41,840 Sending message to telegram
+2022-10-25 18:52:41,856 Starting new HTTPS connection (1): api.telegram.org:443
+2022-10-25 18:52:43,008 https://api.telegram.org:443 "GET /bot5640931401:AAHO6fa4Llm2FlvU0anDmyhAXdiHsmp_WU0/sendMessage?chat_id=1422738123&text=%3Cb%3E%3Ci%3E%7C%7C%20Short%20Trade%20%7C%7C%3C/i%3E%3C/b%3E&parse_mode=html HTTP/1.1" 200 362
+2022-10-25 18:52:43,016 Sending MARKET order: SELL 0.005 BTCUSDT
+2022-10-25 18:52:43,224 https://fapi.binance.com:443 "POST /fapi/v1/order?quantity=0.005&recvWindow=59999&side=SELL&symbol=BTCUSDT&timestamp=1666704163016&type=MARKET&signature=d43894c20e7b0b14c451eb51ec0ba65034b360dd94c665705a407cd8e4d6b373 HTTP/1.1" 200 None
+2022-10-25 18:52:43,232 Getting your positions
+2022-10-25 18:52:43,432 https://fapi.binance.com:443 "GET /fapi/v1/account?timestamp=1666704163232&signature=63bab192753eb9cd1e7ea7dd1568e3cb929d4ba647200bd124a8e591aaa3481e HTTP/1.1" 200 None
+2022-10-25 18:52:43,440 Sending message to telegram
+2022-10-25 18:52:43,456 Starting new HTTPS connection (1): api.telegram.org:443
+2022-10-25 18:52:44,577 https://api.telegram.org:443 "GET /bot5640931401:AAHO6fa4Llm2FlvU0anDmyhAXdiHsmp_WU0/sendMessage?chat_id=1422738123&text=Short%20trade%20OPENED%20successfully%0Asell%200.005%20BTCUSDT%20at%2019380.2%0ACurrent%20position:%20-0.005&parse_mode=html HTTP/1.1" 200 340
+2022-10-25 18:52:44,585 0.005 BTCUSDT SELL order placed successfully
+2022-10-25 18:52:44,585 Trade OPENED successfully
+2022-10-25 18:52:44,585 Getting your holdings
+2022-10-25 18:52:44,799 https://fapi.binance.com:443 "GET /fapi/v1/balance?timestamp=1666704164585&signature=52fad596012d6449be23f97eec106455a4ad468d11ac10dc50184550ed7b20d8 HTTP/1.1" 200 None
+2022-10-25 18:52:44,807 Sending message to telegram
+2022-10-25 18:52:44,815 Starting new HTTPS connection (1): api.telegram.org:443
+2022-10-25 18:52:46,078 https://api.telegram.org:443 "GET /bot5640931401:AAHO6fa4Llm2FlvU0anDmyhAXdiHsmp_WU0/sendMessage?chat_id=1422738123&text=Remaining%20Balance:%2013.417%20USDT&parse_mode=html HTTP/1.1" 200 282
+2022-10-25 18:52:46,086 127.0.0.1 - - [25/Oct/2022 18:52:46] "POST /webhook HTTP/1.1" 200 -
+2022-10-25 18:52:53,636 Getting your positions
+2022-10-25 18:52:54,453 https://fapi.binance.com:443 "GET /fapi/v1/account?timestamp=1666704173636&signature=ea540dbc65c7dff6469490f5c11160b7e6975173851241aeab97b491e82c7269 HTTP/1.1" 200 None
+2022-10-25 18:52:54,460 Position: -0.005
+2022-10-25 18:52:54,460 Getting price for BTCUSDT
+2022-10-25 18:52:54,852 https://fapi.binance.com:443 "GET /fapi/v1/ticker/price HTTP/1.1" 200 None
+2022-10-25 18:52:54,861 Sending MARKET order: BUY 0.005 BTCUSDT
+2022-10-25 18:52:55,193 https://fapi.binance.com:443 "POST /fapi/v1/order?quantity=0.005&recvWindow=59999&reduceOnly=True&side=BUY&symbol=BTCUSDT&timestamp=1666704174861&type=MARKET&signature=66de5e0b72b7016c4bcc446fcea6cd28fb5d06c900ccb51151e314fa12ca4d58 HTTP/1.1" 200 None
+2022-10-25 18:52:55,193 Getting your positions
+2022-10-25 18:52:55,402 https://fapi.binance.com:443 "GET /fapi/v1/account?timestamp=1666704175201&signature=e031e68d694da936b6100cc8261509e63d702699c7c76fd65abcb057681b6623 HTTP/1.1" 200 None
+2022-10-25 18:52:55,410 Sending message to telegram
+2022-10-25 18:52:55,426 Starting new HTTPS connection (1): api.telegram.org:443
+2022-10-25 18:52:56,455 https://api.telegram.org:443 "GET /bot5640931401:AAHO6fa4Llm2FlvU0anDmyhAXdiHsmp_WU0/sendMessage?chat_id=1422738123&text=Short%20trade%20CLOSED%20successfully%0Abuy%200.005%20BTCUSDT%20at%2019382.2%0ACurrent%20position:%200.0&parse_mode=html HTTP/1.1" 200 336
+2022-10-25 18:52:56,463 0.005 BTCUSDT BUY order placed successfully
+2022-10-25 18:52:56,463 Trade CLOSED successfully
+
+2022-10-25 18:52:56,463 Getting your holdings
+2022-10-25 18:52:56,711 https://fapi.binance.com:443 "GET /fapi/v1/balance?timestamp=1666704176463&signature=6a52792dbd8780e32c3097747214dbd08104744c0d77ede4531a4c7b6669cd2a HTTP/1.1" 200 None
+2022-10-25 18:52:56,727 Sending message to telegram
+2022-10-25 18:52:56,743 Starting new HTTPS connection (1): api.telegram.org:443
+2022-10-25 18:52:57,687 https://api.telegram.org:443 "GET /bot5640931401:AAHO6fa4Llm2FlvU0anDmyhAXdiHsmp_WU0/sendMessage?chat_id=1422738123&text=Remaining%20Balance:%20110.262%20USDT&parse_mode=html HTTP/1.1" 200 284
+2022-10-25 18:52:57,695 127.0.0.1 - - [25/Oct/2022 18:52:57] "POST /webhook HTTP/1.1" 200 -
+2022-10-25 18:53:04,821 Getting your positions
+2022-10-25 18:53:05,166 https://fapi.binance.com:443 "GET /fapi/v1/account?timestamp=1666704184821&signature=a39759f11409dd1328d7557288a6b3cfecbd2000dc6a16c6a7cbc566a6a7b717 HTTP/1.1" 200 None
+2022-10-25 18:53:05,174 Position: 0.0
+2022-10-25 18:53:05,174 Getting your holdings
+2022-10-25 18:53:05,385 https://fapi.binance.com:443 "GET /fapi/v1/balance?timestamp=1666704185174&signature=d129512e46a9f5f7818c1722f6169bf9e563369f9760143c02ce1b79ba365d8d HTTP/1.1" 200 None
+2022-10-25 18:53:05,393 Holdings: 110.26203711 USDT
+2022-10-25 18:53:05,393 Tradable: 104.74893525449998 USDT
+2022-10-25 18:53:05,393 Getting price for BTCUSDT
+2022-10-25 18:53:05,665 https://fapi.binance.com:443 "GET /fapi/v1/ticker/price HTTP/1.1" 200 None
+2022-10-25 18:53:05,673 BTCUSDT Price: 19384.6
+2022-10-25 18:53:05,673 Quantity: 0.005
+2022-10-25 18:53:05,673 Sending message to telegram
+2022-10-25 18:53:05,689 Starting new HTTPS connection (1): api.telegram.org:443
+2022-10-25 18:53:06,733 https://api.telegram.org:443 "GET /bot5640931401:AAHO6fa4Llm2FlvU0anDmyhAXdiHsmp_WU0/sendMessage?chat_id=1422738123&text=%3Cb%3E%3Ci%3E%7C%7C%20Long%20Trade%20%7C%7C%3C/i%3E%3C/b%3E&parse_mode=html HTTP/1.1" 200 362
+2022-10-25 18:53:06,742 Sending MARKET order: BUY 0.005 BTCUSDT
+2022-10-25 18:53:07,086 https://fapi.binance.com:443 "POST /fapi/v1/order?quantity=0.005&recvWindow=59999&side=BUY&symbol=BTCUSDT&timestamp=1666704186742&type=MARKET&signature=4170a38eac41a81ae4ac464e9d8d798bc92a4e0f8303cb5f662c618a1d7da01c HTTP/1.1" 200 None
+2022-10-25 18:53:07,093 Getting your positions
+2022-10-25 18:53:07,309 https://fapi.binance.com:443 "GET /fapi/v1/account?timestamp=1666704187093&signature=4d1d142c8019f071d67ba7dd7170e696331005d7c43500eca42275aab120cb07 HTTP/1.1" 200 None
+2022-10-25 18:53:07,317 Sending message to telegram
+2022-10-25 18:53:07,333 Starting new HTTPS connection (1): api.telegram.org:443
+2022-10-25 18:53:08,309 https://api.telegram.org:443 "GET /bot5640931401:AAHO6fa4Llm2FlvU0anDmyhAXdiHsmp_WU0/sendMessage?chat_id=1422738123&text=Long%20trade%20OPENED%20successfully%0Abuy%200.005%20BTCUSDT%20at%2019384.6%0ACurrent%20position:%200.005&parse_mode=html HTTP/1.1" 200 338
+2022-10-25 18:53:08,317 0.005 BTCUSDT BUY order placed successfully
+2022-10-25 18:53:08,317 Trade OPENED successfully
+2022-10-25 18:53:08,317 Getting your holdings
+2022-10-25 18:53:08,526 https://fapi.binance.com:443 "GET /fapi/v1/balance?timestamp=1666704188317&signature=c9e7681c5101dc69ae9356cae0aa77cadcc3b5a2a7207c7cedf44bc01f763771 HTTP/1.1" 200 None
+2022-10-25 18:53:08,526 Sending message to telegram
+2022-10-25 18:53:08,541 Starting new HTTPS connection (1): api.telegram.org:443
+2022-10-25 18:53:09,837 https://api.telegram.org:443 "GET /bot5640931401:AAHO6fa4Llm2FlvU0anDmyhAXdiHsmp_WU0/sendMessage?chat_id=1422738123&text=Remaining%20Balance:%2013.303%20USDT&parse_mode=html HTTP/1.1" 200 283
+2022-10-25 18:53:09,837 127.0.0.1 - - [25/Oct/2022 18:53:09] "POST /webhook HTTP/1.1" 200 -
+2022-10-25 18:53:14,450 Getting your positions
+2022-10-25 18:53:14,813 https://fapi.binance.com:443 "GET /fapi/v1/account?timestamp=1666704194450&signature=f1bdc6d1ed800bcd63c4237c32fe9ed0a1737c1d0d083eb274dcf6e61c6a341b HTTP/1.1" 200 None
+2022-10-25 18:53:14,821 Position: 0.005
+2022-10-25 18:53:14,821 Getting price for BTCUSDT
+2022-10-25 18:53:15,045 https://fapi.binance.com:443 "GET /fapi/v1/ticker/price HTTP/1.1" 200 None
+2022-10-25 18:53:15,045 Sending MARKET order: SELL 0.005 BTCUSDT
+2022-10-25 18:53:15,317 https://fapi.binance.com:443 "POST /fapi/v1/order?quantity=0.005&recvWindow=59999&reduceOnly=True&side=SELL&symbol=BTCUSDT&timestamp=1666704195045&type=MARKET&signature=fffe3dd753269d08f06ab182411e4a63d6c54783c505532a7f26490f40f51a8d HTTP/1.1" 200 None
+2022-10-25 18:53:15,325 Getting your positions
+2022-10-25 18:53:15,542 https://fapi.binance.com:443 "GET /fapi/v1/account?timestamp=1666704195325&signature=f74dcf67b9cabaac4ec554a1df71d250e9f2cf549e597419d3ce7c3577481628 HTTP/1.1" 200 None
+2022-10-25 18:53:15,550 Sending message to telegram
+2022-10-25 18:53:15,566 Starting new HTTPS connection (1): api.telegram.org:443
+2022-10-25 18:53:17,387 https://api.telegram.org:443 "GET /bot5640931401:AAHO6fa4Llm2FlvU0anDmyhAXdiHsmp_WU0/sendMessage?chat_id=1422738123&text=Long%20trade%20CLOSED%20successfully%0Asell%200.005%20BTCUSDT%20at%2019384.0%0ACurrent%20position:%200.0&parse_mode=html HTTP/1.1" 200 337
+2022-10-25 18:53:17,395 0.005 BTCUSDT SELL order placed successfully
+2022-10-25 18:53:17,403 Trade CLOSED successfully
+
+2022-10-25 18:53:17,403 Getting your holdings
+2022-10-25 18:53:17,603 https://fapi.binance.com:443 "GET /fapi/v1/balance?timestamp=1666704197403&signature=61b2307a3af1aae952e31eaacbf3ee10627f2cb32559f496858d0f687d778d8c HTTP/1.1" 200 None
+2022-10-25 18:53:17,603 Sending message to telegram
+2022-10-25 18:53:17,619 Starting new HTTPS connection (1): api.telegram.org:443
+2022-10-25 18:53:18,675 https://api.telegram.org:443 "GET /bot5640931401:AAHO6fa4Llm2FlvU0anDmyhAXdiHsmp_WU0/sendMessage?chat_id=1422738123&text=Remaining%20Balance:%20110.182%20USDT&parse_mode=html HTTP/1.1" 200 284
+2022-10-25 18:53:18,683 127.0.0.1 - - [25/Oct/2022 18:53:18] "POST /webhook HTTP/1.1" 200 -
