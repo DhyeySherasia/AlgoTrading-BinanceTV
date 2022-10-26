@@ -10,7 +10,9 @@ from flask import Flask, request, jsonify, render_template
 from binance.client import Client
 from binance.enums import *
 from functions import *
+import threading
 import logging
+import os
 
 app = Flask(__name__)
 
@@ -18,12 +20,9 @@ app = Flask(__name__)
 
 # Create and configure logger
 logging.basicConfig(filename="log_file.log", level=logging.DEBUG, format='%(asctime)s %(message)s', filemode='w')
-
-# Creating an object
 logger = logging.getLogger()
 
 
-# Resolve server time difference error
 # Sending telegram message taking too long
 
 
@@ -31,7 +30,6 @@ logger = logging.getLogger()
 
 @app.route('/')
 def home():
-    # return render_template("home.html", position=get_my_positions)  
     return "Algorithmic Trading Bot created by @dhyeysherasia"
 
 
@@ -90,8 +88,7 @@ def webhook():
 
         # Get remaining usdt
         holdings = get_my_holdings(specific=True, symbol='USDT')
-        holdings = str(
-            f"{float(holdings[0]['withdrawAvailable']):.3f}")  # Can use 'withdrawAvailable' as balacnce will be same after placing order
+        holdings = str(f"{float(holdings[0]['withdrawAvailable']):.3f}")  # Can use 'withdrawAvailable' as balacnce will be same after placing order
         remaining_usdt = float(holdings)
         bot_response = send_telegram_message(f"Remaining Balance: {remaining_usdt} USDT")
         return order_response
@@ -116,10 +113,31 @@ def webhook():
         }
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
 
-    # Initialize telegram commands
-    # print("Initializing telegram commands")
-    # updater.start_polling()
-    # updater.idle()
+# ----- Multithreading ------>
+
+
+class FlaskThread(threading.Thread):
+    def run(self) -> None:
+        app.run(host="0.0.0.0")
+
+
+class TelegramThread(threading.Thread):
+    def run(self) -> None:
+        print("Inside main TelegramThread class")
+        main()
+
+
+if __name__ == "__main__":
+
+    flask_thread = FlaskThread()
+    flask_thread.start()
+
+    main()
+
+
+    # app.run(debug=True)
+
+
+
+

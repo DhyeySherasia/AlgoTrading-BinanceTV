@@ -4,13 +4,12 @@ from binance.client import Client
 from binance.enums import *
 import logging
 
+
 # Define binance client object
-client = Client(config.API_KEY, config.API_SECRET, testnet=False)
+client = Client(config.API_KEY, config.API_SECRET, testnet=True)
 
 # Create and configure logger
 logging.basicConfig(filename="log_file.log", level=logging.DEBUG, format='%(asctime)s %(message)s', filemode='w')
-
-# Creating an object
 logger = logging.getLogger()
 
 
@@ -115,7 +114,7 @@ def open_trade(side, symbol, order_type=ORDER_TYPE_MARKET):
         holdings = get_my_holdings(specific=True, symbol='USDT')
         available_usdt = float(holdings[0]['withdrawAvailable'])  # Can use 'withdrawAvailable' as balacnce will be same after placing order
         # 'Margin insufficient' error with 100%. Hence used 95%.
-        to_trade_usdt = (95 / 100) * available_usdt  # 95% of available USDT
+        to_trade_usdt = (95/100) * available_usdt  # 95% of available USDT
         print(f"Holdings: {available_usdt} USDT")
         print(f"Tradable: {to_trade_usdt} USDT")
         logger.info(f"Holdings: {available_usdt} USDT")
@@ -158,12 +157,10 @@ def open_trade(side, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         print(f"Sending {order_type} order: {side} {quantity} {symbol}")
         logger.info(f"Sending {order_type} order: {side} {quantity} {symbol}")
-        order = client.futures_create_order(symbol=symbol, side=side, quantity=quantity, type=order_type,
-                                            recvWindow=59999)
+        order = client.futures_create_order(symbol=symbol, side=side, quantity=quantity, type=order_type, recvWindow=59999)
 
     except Exception as e:
-        bot_response = send_telegram_message(
-            f"Failed to OPEN {direction} trade\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
+        bot_response = send_telegram_message(f"Failed to OPEN {direction} trade\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
         bot_response = send_telegram_message(f"Error: {e}")
         bot_response = send_telegram_message(f"Order response: {order}")
         print(f"An exception occurred while opening {side} trade: {e}")
@@ -175,8 +172,7 @@ def open_trade(side, symbol, order_type=ORDER_TYPE_MARKET):
         }
 
     # return this if success
-    bot_response = send_telegram_message(
-        f"{direction} trade OPENED successfully\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
+    bot_response = send_telegram_message(f"{direction} trade OPENED successfully\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
     print(f"{side} order placed successfully")
     print("Trade OPENED successfully")
     logger.info(f"{quantity} {symbol} {side} order placed successfully")
@@ -214,12 +210,10 @@ def close_trade(side, symbol, quantity, order_type=ORDER_TYPE_MARKET):
     try:
         print(f"Sending {order_type} order: {side} {quantity} {symbol}")
         logger.info(f"Sending {order_type} order: {side} {quantity} {symbol}")
-        order = client.futures_create_order(symbol=symbol, side=side, quantity=quantity, reduceOnly=True,
-                                            type=order_type, recvWindow=59999)
+        order = client.futures_create_order(symbol=symbol, side=side, quantity=quantity, reduceOnly=True, type=order_type, recvWindow=59999)
 
     except Exception as e:
-        bot_response = send_telegram_message(
-            f"Failed to CLOSE {direction} trade\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
+        bot_response = send_telegram_message(f"Failed to CLOSE {direction} trade\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
         bot_response = send_telegram_message(f"Error: {e}")
         bot_response = send_telegram_message(f"Order response: {order}")
 
@@ -242,3 +236,6 @@ def close_trade(side, symbol, quantity, order_type=ORDER_TYPE_MARKET):
         "code": f"{direction} trade CLOSED successfully",
         "message": f"{quantity} {symbol} {side} order placed successfully"
     }
+
+
+
