@@ -157,7 +157,7 @@ def open_trade(side, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         print(f"Sending {order_type} order: {side} {quantity} {symbol}")
         logger.info(f"Sending {order_type} order: {side} {quantity} {symbol}")
-        order = client.futures_create_order(symbol=symbol, side=side, quantity=quantity, type=order_type, recvWindow=59999)
+        order = client.futures_create_order(symbol=symbol, side=side, quantity=quantity, type=order_type, recvWindow=100000000)
 
     except Exception as e:
         bot_response = send_telegram_message(f"Failed to OPEN {direction} trade\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
@@ -210,7 +210,7 @@ def close_trade(side, symbol, quantity, order_type=ORDER_TYPE_MARKET):
     try:
         print(f"Sending {order_type} order: {side} {quantity} {symbol}")
         logger.info(f"Sending {order_type} order: {side} {quantity} {symbol}")
-        order = client.futures_create_order(symbol=symbol, side=side, quantity=quantity, reduceOnly=True, type=order_type, recvWindow=59999)
+        order = client.futures_create_order(symbol=symbol, side=side, quantity=quantity, reduceOnly=True, type=order_type, recvWindow=100000000)
 
     except Exception as e:
         bot_response = send_telegram_message(f"Failed to CLOSE {direction} trade\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")

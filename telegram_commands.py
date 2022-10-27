@@ -106,12 +106,12 @@ def close(update=Update, context=CallbackContext):
 
 def help(update=Update, context=CallbackContext):
     if verified_user(update=update):
-        update.message.reply_text("/positions --> Current position\n/holdings --> Current holdings (USDT)\n/long --> Open long trade\n/short --> Open short trade\n/close --> Close any open trade\n/help --> Show all commands\n*Note: Trades will be executed only if the position conditions meet (Pyramiding == 1)")
+        update.message.reply_text("/positions --> Current position\n/holdings --> Current holdings (USDT)\n/long --> Open long trade\n/short --> Open short trade\n/close --> Close any open trade\n/start --> Welcome message\n/help --> Show all commands\n*Note: Trades will be executed only if the position conditions meet (Pyramiding == 1)")
 
 
 def start(update=Update, context=CallbackContext):
     if verified_user(update=update):
-        update.message.reply_text(f"Hello {update.effective_user.first_name} !!\nWelcome to the AlgoTrading bot developed by @dhyeysherasia\nUse /help to see available commands")
+        update.message.reply_text(f"Hello {update.effective_user.first_name} !!\nWelcome to the AlgoTrading bot developed by @dhyeysherasia\nUse /help to see available commands.")
 
 
 def unknown_text(update=Update, context=CallbackContext):

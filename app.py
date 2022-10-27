@@ -119,7 +119,7 @@ def webhook():
 
 class FlaskThread(threading.Thread):
     def run(self) -> None:
-        app.run(host="0.0.0.0")
+        app.run()
 
 
 class TelegramThread(threading.Thread):
