@@ -32,7 +32,7 @@ def verified_user(update=Update, context=CallbackContext):
     else:
         bot_response = send_telegram_message(f"{update.effective_user.first_name} tried to access the AlgoTrading bot\nUser id: {update.effective_user.id}")
         logger.warning(f"{update.effective_user.first_name}_{user_id} tried to access the AlgoTrading bot")
-        update.message.reply_text("Sorry, this command is restricted to the bot owner")
+        update.message.reply_text("Sorry, this command is restricted to the bot owner.")
         return False
 
 
@@ -63,6 +63,12 @@ def long(update=Update, context=CallbackContext):
         else:
             update.message.reply_text(f"Trade already exists.\nYour current position: {my_positions}")
 
+        # Get remaining usdt
+        holdings = get_my_holdings(specific=True, symbol='USDT')
+        holdings = str(f"{float(holdings[0]['withdrawAvailable']):.3f}")  # Can use 'withdrawAvailable' as balacnce will be same after placing order
+        remaining_usdt = float(holdings)
+        update.message.reply_text(f"Remaining Balance: {remaining_usdt} USDT")
+
 
 def short(update=Update, context=CallbackContext):
     if verified_user(update=update):
@@ -77,6 +83,12 @@ def short(update=Update, context=CallbackContext):
 
         else:
             update.message.reply_text(f"Trade already exists.\nYour current position: {my_positions}")
+        
+        # Get remaining usdt
+        holdings = get_my_holdings(specific=True, symbol='USDT')
+        holdings = str(f"{float(holdings[0]['withdrawAvailable']):.3f}")  # Can use 'withdrawAvailable' as balacnce will be same after placing order
+        remaining_usdt = float(holdings)
+        update.message.reply_text(f"Remaining Balance: {remaining_usdt} USDT")
 
 
 def close(update=Update, context=CallbackContext):
@@ -103,15 +115,42 @@ def close(update=Update, context=CallbackContext):
         else:
             update.message.reply_text(f"No open trade found.\nYour current position: {my_positions}")
 
+        # Get remaining usdt
+        holdings = get_my_holdings(specific=True, symbol='USDT')
+        holdings = str(f"{float(holdings[0]['withdrawAvailable']):.3f}")  # Can use 'withdrawAvailable' as balacnce will be same after placing order
+        remaining_usdt = float(holdings)
+        update.message.reply_text(f"Remaining Balance: {remaining_usdt} USDT")
+
+
+def pnl(update=Update, context=CallbackContext):
+    if verified_user(update=update):
+        pnl = get_pnl()
+        if pnl['pos'] != 0:
+            update.message.reply_text(f"Your PnL: {pnl['pnl']} USDT\nPnL percentage: {pnl['pnl_percentage']} %")
+        
+        elif pnl['pos'] == 0:
+            update.message.reply_text(f"No open trade found")
+            update.message.reply_text(f"Recent trade PnL:\n{pnl['pnl']} USDT\n{pnl['pnl_percentage']} %\nNote: Excluding trade fees.")
+            
+            # Get remaining usdt
+            holdings = get_my_holdings(specific=True, symbol='USDT')
+            holdings = str(f"{float(holdings[0]['withdrawAvailable']):.3f}")  # Can use 'withdrawAvailable' as balacnce will be same after placing order
+            remaining_usdt = float(holdings)
+            update.message.reply_text(f"Remaining Balance: {remaining_usdt} USDT")
+
 
 def help(update=Update, context=CallbackContext):
     if verified_user(update=update):
-        update.message.reply_text("/positions --> Current position\n/holdings --> Current holdings (USDT)\n/long --> Open long trade\n/short --> Open short trade\n/close --> Close any open trade\n/start --> Welcome message\n/help --> Show all commands\n*Note: Trades will be executed only if the position conditions meet (Pyramiding == 1)")
+        update.message.reply_text("/positions --> Current position\n/holdings --> Current holdings (USDT)\n/long --> Open long trade\n/short --> Open short trade\n/close --> Close any open trade\n/pnl --> Current PnL\n/start --> Welcome message\n/help --> Show all commands\n*Note: Trades will be executed only if the position conditions meet (Pyramiding == 1)")
+    else:
+        update.message.reply_text("/positions --> Current position\n/holdings --> Current holdings (USDT)\n/long --> Open long trade\n/short --> Open short trade\n/close --> Close any open trade\n/pnl --> Current PnL\n/start --> Welcome message\n/help --> Show all commands\n*Note: Trades will be executed only if the position conditions meet (Pyramiding == 1)")
 
 
 def start(update=Update, context=CallbackContext):
     if verified_user(update=update):
-        update.message.reply_text(f"Hello {update.effective_user.first_name} !!\nWelcome to the AlgoTrading bot developed by @dhyeysherasia\nUse /help to see available commands.")
+        update.message.reply_text(f"Hello {update.effective_user.first_name} !!\nWelcome to the AlgoTrading bot developed by @dhyeySherasia\nUse /help to see available commands.")
+    else:
+        update.message.reply_text(f"Hello {update.effective_user.first_name} !!\nWe can automate your binance trades using tradingview webhook alerts.\nYou can also manage your trades using simple bot commands. Use /help to see available commands.\nCurrently this bot is restricted to the bot owner only. Contact @dhyeySherasia for more info.")
 
 
 def unknown_text(update=Update, context=CallbackContext):
@@ -133,6 +172,7 @@ def main():
     dispatcher.add_handler(CommandHandler('long', long))
     dispatcher.add_handler(CommandHandler('short', short))
     dispatcher.add_handler(CommandHandler('close', close))
+    dispatcher.add_handler(CommandHandler('pnl', pnl))
     dispatcher.add_handler(CommandHandler('help', help))
     dispatcher.add_handler(CommandHandler('start', start))
 

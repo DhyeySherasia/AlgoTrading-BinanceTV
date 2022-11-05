@@ -13,6 +13,7 @@ logging.basicConfig(filename="log_file.log", level=logging.DEBUG, format='%(asct
 logger = logging.getLogger()
 
 
+
 # Get how much USDT do I have to buy futures contracts
 def get_my_holdings(specific=False, symbol='all'):
     try:
@@ -53,7 +54,7 @@ def get_futures_symbol_price(symbol):
 
         for symbol_detail in symbols:
             if symbol_detail['symbol'] == symbol:
-                return symbol_detail
+                return symbol_detail['price']
 
     except Exception as e:
         print(f"An exception occurred - {e}")
@@ -113,8 +114,8 @@ def open_trade(side, symbol, order_type=ORDER_TYPE_MARKET):
         # Get available usdt
         holdings = get_my_holdings(specific=True, symbol='USDT')
         available_usdt = float(holdings[0]['withdrawAvailable'])  # Can use 'withdrawAvailable' as balacnce will be same after placing order
-        # 'Margin insufficient' error with 100%. Hence used 95%.
-        to_trade_usdt = (95/100) * available_usdt  # 95% of available USDT
+        # 'Margin insufficient' error with 100%. Hence used 90%.
+        to_trade_usdt = (90/100) * available_usdt  # 90% of available USDT
         print(f"Holdings: {available_usdt} USDT")
         print(f"Tradable: {to_trade_usdt} USDT")
         logger.info(f"Holdings: {available_usdt} USDT")
@@ -122,7 +123,7 @@ def open_trade(side, symbol, order_type=ORDER_TYPE_MARKET):
 
         # Get BTCUSDT price
         btcusdt = get_futures_symbol_price("BTCUSDT")
-        price_btcusdt = float(btcusdt['price'])
+        price_btcusdt = float(btcusdt)
         print(f"BTCUSDT Price: {price_btcusdt}")
         logger.info(f"BTCUSDT Price: {price_btcusdt}")
 
@@ -139,6 +140,8 @@ def open_trade(side, symbol, order_type=ORDER_TYPE_MARKET):
         bot_response = send_telegram_message("Failure\nCould not calculate quantity")
         bot_response = send_telegram_message(f"Error: {e}")
 
+
+    # Get direction of trade
     if side == 'BUY':
         direction = 'Long'
     elif side == 'SELL':
@@ -151,6 +154,8 @@ def open_trade(side, symbol, order_type=ORDER_TYPE_MARKET):
             "code": "failure",
             "message": "Unknown direction"
         }
+
+    # # Avoid delay of sending message by sending it after placing order
     bot_notification = send_telegram_message(message=f"<b><i>|| {direction} Trade ||</i></b>")
 
     # Placing order
@@ -159,7 +164,12 @@ def open_trade(side, symbol, order_type=ORDER_TYPE_MARKET):
         logger.info(f"Sending {order_type} order: {side} {quantity} {symbol}")
         order = client.futures_create_order(symbol=symbol, side=side, quantity=quantity, type=order_type, recvWindow=100000000)
 
+        # bot_notification = send_telegram_message(message=f"<b><i>|| {direction} Trade ||</i></b>")
+
+
     except Exception as e:
+        # bot_notification = send_telegram_message(message=f"<b><i>|| {direction} Trade ||</i></b>")
+
         bot_response = send_telegram_message(f"Failed to OPEN {direction} trade\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
         bot_response = send_telegram_message(f"Error: {e}")
         bot_response = send_telegram_message(f"Order response: {order}")
@@ -196,16 +206,8 @@ def close_trade(side, symbol, quantity, order_type=ORDER_TYPE_MARKET):
             "code": "failure",
             "message": "Unknown direction"
         }
-
-    # Get BTCUSDT price
-    price_btcusdt = '\'Could not fetch\''
-    try:
-        btcusdt = get_futures_symbol_price("BTCUSDT")
-        price_btcusdt = float(btcusdt['price'])
-    except Exception as e:
-        print("An exception occurred while getting BTCUSDT price while closing trade")
-        bot_response = send_telegram_message(f"Failure\nCould not get BTCUSDT price while closing trade")
-        logger.error("Could not get BTCUSDT price while closing trade")
+    
+    # Getting BTCUSDT price after order is placed to avoid delay.
 
     try:
         print(f"Sending {order_type} order: {side} {quantity} {symbol}")
@@ -213,6 +215,17 @@ def close_trade(side, symbol, quantity, order_type=ORDER_TYPE_MARKET):
         order = client.futures_create_order(symbol=symbol, side=side, quantity=quantity, reduceOnly=True, type=order_type, recvWindow=100000000)
 
     except Exception as e:
+
+        # Get BTCUSDT price
+        price_btcusdt = '\'Could not fetch\''
+        try:
+            btcusdt = get_futures_symbol_price("BTCUSDT")
+            price_btcusdt = float(btcusdt)
+        except Exception as e:
+            print("An exception occurred while getting BTCUSDT price while closing trade")
+            bot_response = send_telegram_message(f"Failure\nCould not get BTCUSDT price while closing trade")
+            logger.error("Could not get BTCUSDT price while closing trade")
+
         bot_response = send_telegram_message(f"Failed to CLOSE {direction} trade\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
         bot_response = send_telegram_message(f"Error: {e}")
         bot_response = send_telegram_message(f"Order response: {order}")
@@ -225,9 +238,19 @@ def close_trade(side, symbol, quantity, order_type=ORDER_TYPE_MARKET):
             "message": f"{quantity} {symbol} {side} order failed"
         }
 
+
+    # Get BTCUSDT price
+    price_btcusdt = '\'Could not fetch\''
+    try:
+        btcusdt = get_futures_symbol_price("BTCUSDT")
+        price_btcusdt = float(btcusdt)
+    except Exception as e:
+        print("An exception occurred while getting BTCUSDT price while closing trade")
+        bot_response = send_telegram_message(f"Failure\nCould not get BTCUSDT price while closing trade")
+        logger.error("Could not get BTCUSDT price while closing trade")
+
     # return this if success
-    bot_response = send_telegram_message(
-        f"{direction} trade CLOSED successfully\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
+    bot_response = send_telegram_message(f"{direction} trade CLOSED successfully\n{side.lower()} {quantity} {symbol} at {price_btcusdt}\nCurrent position: {get_my_positions()}")
     print(f"{side} order placed successfully")
     print("Trade CLOSED successfully")
     logger.info(f"{quantity} {symbol} {side} order placed successfully")
@@ -238,4 +261,67 @@ def close_trade(side, symbol, quantity, order_type=ORDER_TYPE_MARKET):
     }
 
 
+def get_pnl():
+    pnl = 0
+    pnl_usdt = 0
+    pnl_percentage = 0
+
+    try:
+        # order_details = client.futures_get_open_orders()
+        logger.info("Getting all order details")
+        order_details = client.futures_get_all_orders(symbol='BTCUSDT', limit=2)
+        pos = get_my_positions()
+
+        # Long trade
+        if pos > 0:
+            avg_price = float(order_details[-1]['avgPrice'])
+            current_price = float(get_futures_symbol_price("BTCUSDT"))
+            pnl = round((current_price - avg_price), 3)
+            pnl_usdt = round((pnl * abs(pos)), 3)
+            pnl_percentage = round((pnl / avg_price) * 100, 3)
+
+        # Short trade
+        elif pos < 0:
+            avg_price = float(order_details[-1]['avgPrice'])
+            current_price = float(get_futures_symbol_price("BTCUSDT"))
+            pnl = round((avg_price - current_price), 3)
+            pnl_usdt = round((pnl * abs(pos)), 3)
+            pnl_percentage = round((pnl / avg_price) * 100, 3)
+        
+        # Last trade
+        elif pos == 0:
+            open_trade_side = order_details[-2]['side']
+
+            open_price = float(order_details[-2]['avgPrice'])
+            close_price = float(order_details[-1]['avgPrice'])
+            executed_qty = float(order_details[-1]['executedQty'])
+
+            # Long trade
+            if open_trade_side == "BUY":
+                pnl = round((close_price - open_price), 3)
+                pnl_usdt = round((pnl * executed_qty), 3)
+                pnl_percentage = round((pnl / open_price) * 100, 3)
+            
+            # Short trade
+            elif open_trade_side == "SELL":
+                pnl = round((open_price - close_price), 3)
+                pnl_usdt = round((pnl * executed_qty), 3)
+                pnl_percentage = round((pnl / open_price) * 100, 3)
+
+    
+    except Exception as e:
+        print(f"Error: {e}")
+        logger.error(f"Could not calculate pnl: {e}")
+        bot_response = send_telegram_message(f"Failure\nCould not calculate pnl")
+        bot_response = send_telegram_message(f"Error: {e}")
+        return {
+            "code": "Failure",
+            "message": f"Error: {e}"
+        }
+    
+    return {
+        "pnl": pnl_usdt,
+        "pnl_percentage": pnl_percentage,
+        "pos": pos
+    }
 

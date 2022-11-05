@@ -23,6 +23,8 @@ logging.basicConfig(filename="log_file.log", level=logging.DEBUG, format='%(asct
 logger = logging.getLogger()
 
 
+
+
 # Sending telegram message taking too long
 
 
@@ -71,20 +73,20 @@ def webhook():
 
         # Open position if positionAmt == 0.
         if my_positions == 0 and market_position != 'flat':
-            order_response = open_trade(side=side, symbol="BTCUSDT")  # Quantity is cal. inside the function
             trade_opened = True
+            order_response = open_trade(side=side, symbol="BTCUSDT")  # Quantity is cal. inside the function
 
         # If positionAmt > 0, close position by making a 'SELL' order of same quantity.
         elif my_positions > 0 and market_position == 'flat' and side == 'SELL':
+            trade_opened = True
             quantity = abs(my_positions)
             order_response = close_trade(side='SELL', symbol="BTCUSDT", quantity=quantity)
-            trade_opened = True
 
         # If positionAmt < 0, close position by making a 'BUY' order of same quantity.
         elif my_positions < 0 and market_position == 'flat' and side == 'BUY':
+            trade_opened = True
             quantity = abs(my_positions)
             order_response = close_trade(side='BUY', symbol="BTCUSDT", quantity=quantity)
-            trade_opened = True
 
         # Get remaining usdt
         holdings = get_my_holdings(specific=True, symbol='USDT')
@@ -119,6 +121,7 @@ def webhook():
 
 class FlaskThread(threading.Thread):
     def run(self) -> None:
+        print(f"Inside FlaskThread")
         app.run()
 
 
